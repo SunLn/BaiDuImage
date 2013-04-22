@@ -6,7 +6,9 @@ BaiDuImage(Some code for BaiDu Pet)
 -----------
 
 * images，主要存放CSS背景图片
+
 * js,主要存放Jquery及其插件
+
 * phpInc，php数据库操作类及工具函数文件
 
 
