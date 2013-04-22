@@ -1,7 +1,7 @@
 <?php
 	header('Content-type: text/json');
-	require_once('db.class.php');
- 	require_once('nav.function.php');
+	require_once('phpInc/db.class.php');
+ 	require_once('phpInc/nav.function.php');
 	$arr = $_REQUEST;
 	$typeRank = $arr['typeRank'];
 	$typeSize = $arr['typeSize'];

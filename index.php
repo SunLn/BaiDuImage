@@ -1,7 +1,7 @@
 <!doctype html>
 <?php
-	require_once('db.class.php');
- 	require_once('nav.function.php');
+	require_once('phpInc/db.class.php');
+ 	require_once('phpInc/nav.function.php');
 ?>
 <html lang="en">
 <head>
@@ -9,250 +9,26 @@
 	<title>宠物照片管理中心</title>
 	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>	
 	<script type="text/javascript" src="js/jquery.flexslider.js"></script>			
-	<script type="text/javascript" src="js/jquery.scrolltotop.js"></script>		
+	<script type="text/javascript" src="js/jquery.scrolltotop-2.js"></script>		
 	<script type="text/javascript" src="js/jquery.lazyload.js"></script>	
-	<script type="text/javascript">
-		$(window).load(function() {
-			$('.flexslider').flexslider({
-				animation: "slide",
-				controlsContainer: ".flex-container"
-			});
-/*			$.scrolltotop({
-			   	className: 'totop',
-			   	controlHTML : '<a title="返回顶部" hidefocus="hidefocus" href="javascript:void(0);" class="up_to_top"> </a>',
-			   	offsety:0
-		   });	*/
-			$("#pic-box li.flow").mouseover(function(){
-				$(".pic-action",this).css('visibility','visible');
-			});
-			$("#pic-box li.flow").mouseout(function(){
-				$(".pic-action",this).css('visibility','hidden');
-			});
-			function getValueToAjax() {
-				var typeRank, typeSize, name, tag, queryIndex;
-				var n=location.search.substring(1);
-				if(n.indexOf('=') !== -1){
-					name = n.split('=')[1];
-				} else {
-					name = 0;
-				}
-				if($("#pic-size a.on").attr('id') === 'm-size'){
-					typeSize = '2' ;//middle size pic
-					queryIndex = Math.ceil($('.pic-link img').length/5);
-				} else {
-					typeSize = '1' ;//large size pic
-					queryIndex = Math.ceil($('.pic-link img').length/4);
-				}
-				if($("#pic-rank a.current").attr('id') === 'hot-rank') {
-					typeRank = 'hit';
-				} else {
-					typeRank = 'date';
-				}
-				return {
-					typeRank : typeRank,
-					typeSize : typeSize,
-					name     : name,
-					tag      : $("#s-input").val(),
-					queryIndex : queryIndex 
-				};
-			}
-			var lastScrollTop = $(window).scrollTop();
-			var lastScrollTopForAjax = $(window).scrollTop();
-			var INTERVALID;	
-			$(window).scroll(function(event){
-			   var st = $(this).scrollTop();
-			   if(INTERVALID) {
-					clearInterval(INTERVALID);
-			   }
-			   if (st < lastScrollTop){
-			   		//up scroll coding
-			   		if(st>400) {
-						if($("#tag-suggest").height()!=='58') {
-				       	  $("#tag-suggest").css('visibility','visible').animate({
-				       	  	height: 58
-				       	  },200);
-				       }			   			
-			   		} else {
-						$("#tag-suggest").css('visibility','hidden').height('0');
-			   		}				       
-			   } else {
-			   	   //down scroll coding
-			       $("#tag-suggest").css('visibility','hidden').height('0');
-			       if(st-lastScrollTopForAjax>600) {
-						var vObject = getValueToAjax();
-						$.get("Flow.php", {
-							typeRank : vObject.typeRank,
-							typeSize : vObject.typeSize,
-							name     : vObject.name,
-							tag      : vObject.tag,							
-							queryIndex : vObject.queryIndex,
-							queryType : 'flow'
-						}, function (data,textStatus){
-						var picFlowBox = $("#pic-box ul.col");
-							if(vObject.typeSize==2){
-								for(var i=0; i<5; i++) {
-									for(var j=0; j<4; j++) {					
-										var innerString   =  '<li class="flow">';
-											innerString +=		'<div class="pic-innerbox">';
-											innerString +=			'<a href="" class="pic-link"><img src="images/loadingPD.gif" data-original="PetImage/'+data[j*5+i].url+'" width="'+data[j*5+i].xSize+'" height="'+data[j*5+i].ySize+'" class="pic-url"></a>';
-											innerString +=				'<div class="pic-info">';
-											innerString +=					'<a href="" class="pic-title">'+data[j*5+i].tag+'</a>';
-											innerString +=					'<a href="" class="from-site">来自';
-											innerString +=              			'<span class="site-name"></span>';
-											innerString +=              			'<span class="site-url">'+data[j*5+i].fromSite+'</span>';
-											innerString +=            		'</a>';
-											innerString +=					'<span class="size-info">'+data[j*5+i].xSize+'x'+data[j*5+i].ySize+'</span>';
-											innerString +=				'</div>';									
-											innerString +=		'</div>';
-											innerString +=		'<div class="pic-action">';
-											innerString +=			'<a class="btn download"  href="javascript:void(0);"><span>'+data[j*5+i].hit+'</span></a>';
-											innerString +=			'<a class="btn addfav"  id="addfav_1" href="javascript:void(0);"></a>';
-											innerString +=		'</div>';	
-											innerString += '</li>';
-										$(picFlowBox[i]).append(innerString);
-										$("#pic-box li.flow").mouseover(function(){
-											$(".pic-action",this).css('visibility','visible');
-										});
-										$("#pic-box li.flow").mouseout(function(){
-											$(".pic-action",this).css('visibility','hidden');
-										});											
-									}
-								}
-							}	
-						},"json");
-			       		lastScrollTopForAjax = st;
-			       }
-			   }
-			   lastScrollTop = st;
-			   $(".flow img").lazyload({ threshold : 500 });
-			});
-			$('#pic-rank a').click(function(){
-				lastScrollTopForAjax = $(window).scrollTop();
-				if(INTERVALID) {
-					clearInterval(INTERVALID);
-			   }
-				if($(this).attr('class') === 'current') {
-					return false;
-				} else {
-					if($(this).attr('id') === 'hot-rank') {
-						$('#new-rank').removeClass('current');
-						$('#pic-rank .new').removeClass('current');
-						$('#pic-rank .hot').addClass('current');
-					} else {
-						$('#hot-rank').removeClass('current');
-						$('#pic-rank  .hot').removeClass('current');
-						$('#pic-rank  .new').addClass('current');
-					}					
-					$(this).addClass('current');
-					var vObject = getValueToAjax();
-					$.get("Flow.php", {
-						typeRank : vObject.typeRank,
-						typeSize : vObject.typeSize,
-						name     : vObject.name,
-						tag      : vObject.tag,							
-						queryType : 'list'
-					}, function (data,textStatus){
-						var picFlowBox = $("#pic-box ul.col");
-						picFlowBox.empty();
-						if(vObject.typeSize==2){
-							for(var i=0; i<5; i++) {
-								for(var j=0; j<4; j++) {
-									var innerString   =  '<li class="flow">';
-										innerString +=		'<div class="pic-innerbox">';
-										innerString +=			'<a href="" class="pic-link"><img src="images/loadingPD.gif" data-original="PetImage/'+data[j*5+i].url+'" width="'+data[j*5+i].xSize+'" height="'+data[j*5+i].ySize+'" class="pic-url"></a>';
-										innerString +=				'<div class="pic-info">';
-										innerString +=					'<a href="" class="pic-title">'+data[j*5+i].tag+'</a>';
-										innerString +=					'<a href="" class="from-site">来自';
-										innerString +=              			'<span class="site-name"></span>';
-										innerString +=              			'<span class="site-url">'+data[j*5+i].fromSite+'</span>';
-										innerString +=            		'</a>';
-										innerString +=					'<span class="size-info">'+data[j*5+i].xSize+'x'+data[j*5+i].ySize+'</span>';
-										innerString +=				'</div>';									
-										innerString +=		'</div>';
-										innerString +=		'<div class="pic-action">';
-										innerString +=			'<a class="btn download"  href="javascript:void(0);"><span>'+data[j*5+i].hit+'</span></a>';
-										innerString +=			'<a class="btn addfav"  id="addfav_1" href="javascript:void(0);"></a>';
-										innerString +=		'</div>';	
-										innerString += '</li>';
-									$(picFlowBox[i]).append(innerString);
-									$("#pic-box li.flow").mouseover(function(){
-										$(".pic-action",this).css('visibility','visible');
-									});
-									$("#pic-box li.flow").mouseout(function(){
-										$(".pic-action",this).css('visibility','hidden');
-									});											
-								}
-							}
-						}						
-					},"json");
-				};
-				$(".flow img").lazyload({ threshold : 500 });
-				return false;
-			});	
-
-			$('#s-input').focus(function(){
-				INTERVALID = setInterval(function(){
-					lastScrollTopForAjax = $(window).scrollTop();
-					var vObject = getValueToAjax();
-					$.get("Flow.php", {
-						typeRank : vObject.typeRank,
-						typeSize : vObject.typeSize,
-						name     : vObject.name,
-						tag      : vObject.tag,							
-						queryType : 'tag'
-					}, function (data,textStatus){
-						var picFlowBox = $("#pic-box ul.col");
-						picFlowBox.empty();
-						if(vObject.typeSize==2){
-							for(var i=0; i<5; i++) {
-								for(var j=0; j<4; j++) {
-									var innerString   =  '<li class="flow">';
-										innerString +=		'<div class="pic-innerbox">';
-										innerString +=			'<a href="" class="pic-link"><img src="PetImage/'+data[j*5+i].url+'" alt=""></a>';
-										innerString +=				'<div class="pic-info">';
-										innerString +=					'<a href="" class="pic-title">'+data[j*5+i].tag+'</a>';
-										innerString +=					'<a href="" class="from-site">来自';
-										innerString +=              			'<span class="site-name"></span>';
-										innerString +=              			'<span class="site-url">'+data[j*5+i].fromSite+'</span>';
-										innerString +=            		'</a>';
-										innerString +=					'<span class="size-info">'+data[j*5+i].xSize+'x'+data[j*5+i].ySize+'</span>';
-										innerString +=				'</div>';									
-										innerString +=		'</div>';
-										innerString +=		'<div class="pic-action">';
-										innerString +=			'<a class="btn download"  href="javascript:void(0);"><span>'+data[j*5+i].hit+'</span></a>';
-										innerString +=			'<a class="btn addfav"  id="addfav_1" href="javascript:void(0);"></a>';
-										innerString +=		'</div>';	
-										innerString += '</li>';
-									$(picFlowBox[i]).append(innerString);
-									$("#pic-box li.flow").mouseover(function(){
-										$(".pic-action",this).css('visibility','visible');
-									});
-									$("#pic-box li.flow").mouseout(function(){
-										$(".pic-action",this).css('visibility','hidden');
-									});											
-								}
-							}
-						}				
-					},"json");
-				},500);
-				$(".flow img").lazyload({ threshold : 500 });
-			});
-			$('#s-input').blur(function(){
-				clearInterval(INTERVALID);
-			});	
-			$(".flow img").lazyload({ threshold : 500 });			
-		});
-	</script>	
+	<script type="text/javascript" src="main.js"></script>	
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="flexslider.css">
+	<!--[if IE 6]>
+	<script src="js/DD_belatedPNG.js"></script>
+	<script>
+	  DD_belatedPNG.fix('.png_bg,.prev,.next,.btn,.flex-control-nav a,.slide-info');	
+	</script>
+	<link rel="stylesheet" href="ie6.css">
+	<![endif]-->
 </head>
 <body>
 	
 	<div id="header">
 		<div id="header-innerbox" class="center">
-			<h1 id="logo"><a href=""><img src="images/logo.gif" alt=""></a></h1>
-			<form action="" id="search">				
-				<input type="text"  name="word" size="35" maxlength="120" class="i" id="s-input" autocomplete="off">
+			<h1 id="logo"><a href="javascript:void(0);"><img src="images/logo.gif" ></a></h1>
+			<form action="" id="search" class="png_bg">				
+				<input type="text"  name="search" size="35" maxlength="120" class="i" id="s-input" autocomplete="off">
 				<input type="submit" id="s-submit" value="">
 			</form>
 		</div>
@@ -285,7 +61,7 @@
 								<li <?php if($count==6){
 									echo "class=\"last\"";
 									} ?> >
-									<a href="#"><img src="<?php echo "PetImage/".$re['url'];?>" alt=""></a>
+									<a href="#"><img src="<?php echo "PetImage/".$re['url'];?>" ></a>
 									<div class="slide-info"><a href="#"><?php echo $re['tag'];?></a><span>120张</span></div>
 								</li>					
 						<?php
@@ -303,7 +79,7 @@
 	<div id="content">
 		<div id="content-innerbox" class="center">
 			<div id="pic-tag">
-				<h2 class="tag-title">宠物标签</h2>
+				<h2 class="tag-title png_bg">宠物标签</h2>
 				<div class="tag-content">
 					<ul>
 						<?php						
@@ -316,7 +92,7 @@
 								} else {
 									$cl = "";
 								}
-								echo "<li".$cl."><a href=\"#\"".$cl.">".$re['tag']."</a></li>";
+								echo "<li".$cl."><a href=\"javascript:void(0)\"".$cl.">".$re['tag']."</a></li>";
 								$i++;
 							}
 						?>												
@@ -326,8 +102,8 @@
 			</div>
 			<div id="pic-rank">
 				<ul>
-					<li class="current new"><a href="#" class="current" id="new-rank">最新</a></li>
-					<li class="hot"><a href="#" id="hot-rank">本周最热</a></li>
+					<li class="current new"><a href="#" class="current" id="new-rank" hidefocus="hidefocus">最新</a></li>
+					<li class="hot"><a href="#" id="hot-rank" hidefocus="hidefocus">本周最热</a></li>
 				</ul>				
 			</div>
 			<div id="pic-size">
@@ -343,8 +119,7 @@
 							<span class="m-size-ico">中图</span>
 						</a>
 					</li>
-				</ul>
-				<div id="prompt"><a href="javascript:void(0);"></a></div>			
+				</ul>		
 			</div>
 			<div id="pic-box">
 				<?php

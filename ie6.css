@@ -1,0 +1,7 @@
+#tag-suggest{ 
+    _position:absolute;
+    _top: expression ( ( (ignoreMe0 = document.documentElement.clientHeight ? document.documentElement.clientHeight :document.body.clientHeight)-94 +( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' ); 
+}
+#menu-innerbox  li {
+	_background:url("images/menu-bg.gif") no-repeat left -144px;
+}
