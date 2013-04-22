@@ -1,11 +1,10 @@
-BaiDuImage
+BaiDuImage(Some code for BaiDu Pet)
 ==========
 
-Some code for BaiDu Pet
+
 
 ==========
 TableCreate.sql 创建数据库表格
-
 DataInsert.php  循环文件目录获取图片信息，并插入数据库表格
 
 index.php  主页
