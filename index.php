@@ -1,10 +1,11 @@
 <!doctype html>
 <?php
-   require_once('phpinc/global.php');
+	require_once('db.class.php');
+ 	require_once('nav.function.php');
 ?>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+	<meta charset="UTF-8">
 	<title>宠物照片管理中心</title>
 	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>	
 	<script type="text/javascript" src="js/jquery.flexslider.js"></script>			
@@ -16,11 +17,11 @@
 				animation: "slide",
 				controlsContainer: ".flex-container"
 			});
-			$.scrolltotop({
+/*			$.scrolltotop({
 			   	className: 'totop',
 			   	controlHTML : '<a title="返回顶部" hidefocus="hidefocus" href="javascript:void(0);" class="up_to_top"> </a>',
 			   	offsety:0
-		   });	
+		   });	*/
 			$("#pic-box li.flow").mouseover(function(){
 				$(".pic-action",this).css('visibility','visible');
 			});
@@ -123,7 +124,7 @@
 			       }
 			   }
 			   lastScrollTop = st;
-			   $(".flow img").lazyload({ threshold : 400 });
+			   $(".flow img").lazyload({ threshold : 500 });
 			});
 			$('#pic-rank a').click(function(){
 				lastScrollTopForAjax = $(window).scrollTop();
@@ -185,7 +186,7 @@
 						}						
 					},"json");
 				};
-				$(".flow img").lazyload({ threshold : 400 });
+				$(".flow img").lazyload({ threshold : 500 });
 				return false;
 			});	
 
@@ -234,12 +235,12 @@
 						}				
 					},"json");
 				},500);
-				$(".flow img").lazyload({ threshold : 400 });
+				$(".flow img").lazyload({ threshold : 500 });
 			});
 			$('#s-input').blur(function(){
 				clearInterval(INTERVALID);
 			});	
-			$(".flow img").lazyload({ threshold : 400 });			
+			$(".flow img").lazyload({ threshold : 500 });			
 		});
 	</script>	
 	<link rel="stylesheet" href="style.css">
