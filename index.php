@@ -12,7 +12,7 @@
 	<script type="text/javascript" src="js/jquery.scrolltotop-2.js"></script>		
 	<script type="text/javascript" src="js/jquery.lazyload.js"></script>	
 	<script type="text/javascript" src="main.js"></script>	
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="style.min.css">
 	<link rel="stylesheet" href="flexslider.css">
 	<!--[if IE 6]>
 	<script src="js/DD_belatedPNG.js"></script>
