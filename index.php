@@ -9,7 +9,7 @@
 	<title>宠物照片管理中心</title>
 	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>	
 	<script type="text/javascript" src="js/jquery.flexslider.js"></script>			
-	<script type="text/javascript" src="js/jquery.scrolltotop-2.js"></script>		
+	<script type="text/javascript" src="js/jquery.scrolltotop.js"></script>		
 	<script type="text/javascript" src="js/jquery.lazyload.js"></script>	
 	<script type="text/javascript" src="main.js"></script>	
 	<link rel="stylesheet" href="style.min.css">
